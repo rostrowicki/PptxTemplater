@@ -225,8 +225,10 @@
         /// <returns><c>true</c> if a tag has been found and replaced, <c>false</c> otherwise.</returns>
         internal static bool ReplaceTagWithHtml(A.Paragraph p, string tag, string newText, string fontName = null, int fontSize = 0, IDictionary<string, string> hyperlinks = null)
         {
+            newText = CorrectUnhandledHtmlTags(newText); // e.g. deal with ul/li html tags
             bool isFirstLine = true; // avoiding unintentional empty line at the begining of the text
             bool replaced = false;
+            string[] closingTags = new string[] { "div", "p" }; // tags that force line break in PPTX paragraph
 
             if (string.IsNullOrEmpty(tag))
             {
@@ -266,6 +268,7 @@
                 {
                     foreach (var item in nodes.Children)
                     {
+                        bool skipLineBreak = false;
                         A.Run r = new A.Run();
                         r.RunProperties = new A.RunProperties();
 
@@ -299,6 +302,12 @@
                         }
                         r.AppendChild(at);
                         p.Append(r);
+
+                        // LINE BREAK -- if outer tag is div add line break
+                        if (closingTags.Contains(item.Parent.Tag) && skipLineBreak == false)
+                        {
+                            p.Append(new A.Break());
+                        }
                     }
 
                     // remove parsed html part
@@ -349,6 +358,20 @@
                                 value == 0x0009 ||
                                 value == 0x000A ||
                                 value == 0x000D).ToArray());
+        }
+
+        /// <summary>
+        /// Changing unhandled HTML tags to suitable alternatives
+        /// </summary>
+        /// <param name="newText"></param>
+        /// <returns></returns>
+        private static string CorrectUnhandledHtmlTags(string newText)
+        {
+            newText = newText.Replace(@"<ul>", "<div>");
+            newText = newText.Replace(@"</ul>", "</div>");
+            newText = newText.Replace(@"<li>", "• ");
+            newText = newText.Replace(@"</li>", Environment.NewLine);
+            return newText?.Trim();
         }
 
         /// <summary>

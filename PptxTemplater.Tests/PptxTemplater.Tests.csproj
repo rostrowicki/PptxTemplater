@@ -96,6 +96,9 @@
     <None Include="files\ReplaceTags.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="files\ReplaceTagsHtml.pptx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="files\ReplaceTagsHyperlinks.pptx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
