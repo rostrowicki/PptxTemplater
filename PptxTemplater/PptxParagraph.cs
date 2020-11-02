@@ -368,9 +368,11 @@
         private static string CorrectUnhandledHtmlTags(string newText)
         {
             newText = newText.Replace(@"<ul>", "<div>");
+            newText = newText.Replace(@"<ul ", "<div ");
             newText = newText.Replace(@"</ul>", "</div>");
-            newText = newText.Replace(@"<li>", "• ");
-            newText = newText.Replace(@"</li>", Environment.NewLine);
+            newText = newText.Replace(@"<li>", "<span>• ");
+            newText = newText.Replace(@"<li ", "<span ");
+            newText = newText.Replace(@"</li>", "</span>");
             return newText?.Trim();
         }
 
